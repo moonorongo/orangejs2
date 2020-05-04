@@ -33,7 +33,7 @@ class Orange {
     this._counter = 1;
 
     /** @property {private int} _speed el intervalo de ms entre llamadas al loop, 20ms son 60 fps. */
-    this._speed = 20; // ms;
+    this._speed = 120; // ms;
 
     /** @property {private object} _eventStack Aqui se guardan las instancias de los sprites a los que se asignaron eventos. */
     this._eventStack = { 
@@ -197,7 +197,6 @@ class Orange {
       let nextLoop = this._speed - msLoop;
       if( msLoop >= this._speed) {
         nextLoop = (Math.floor(msLoop / this._speed) + 1) * this._speed;
-      } else {
         console.warn('salteados ' + (Math.floor(msLoop / this._speed) + 1) + ' frames');
       }
 

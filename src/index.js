@@ -1,12 +1,14 @@
 console.log('Orange v2 Started');
 
+import _ from "underscore";
+
 import Orange from './lib/orange';
 import Layer from './lib/layer';
 import ImageMap from './lib/image_map';
 import Animate from './lib/animate';
 import Sprite from './lib/sprite';
 import Player from './game/player'
-import _ from "underscore";
+import EnemyBlock from './game/enemy-block'
 
 // test url: localhost:82
 // testear, ver si come memoria
@@ -62,17 +64,26 @@ function init_game() {
   l.addSprite(nave); 
   nave.setX(110).setY(192);
 
-// armar un SimpleWeapon, que sea esta bala, que la pueda asignar al player
-// y que el player dispare lo que le asigne
 
-
+  // Bloque Enemigos
+  var bloqueEnemigos = new EnemyBlock(app);
+  bloqueEnemigos.buildEnemies(20, 80);
   
+
+  app.preUpdateCallback(() => {
+    bloqueEnemigos.updateFrame()
+  })
+
+// implementar colisiones
+
+// ver _dieStatus, muriendo, etc,
+// si no esta definido, que devuelva 0 frames, de alguna forma,
+// ahora devuelve la cantidad de frames del 1er status... y puede que no quiera eso.
+// y, cuando esta muriendo... poder setear si sigue siendo destructivo.
+
+
+
   /*
-      
-       
-       
-  
-       
   // Definicion del tiro ENEMY ---------------------------------------
   var balaEnemyImageMap = new ImageMap({
       image : app.getImageManager().get("bala_enemy"), 
@@ -117,44 +128,16 @@ function init_game() {
   
       return spr;
   } // FIN DEFINICION DISPARO ENEMY --------------------------------
+*/       
        
        
        
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-  // Definicion de enemigos --------------------------------
-  var enemy3ImageMap = new ImageMap({
-      image : app.getImageManager().get("enemy3"), 
-      width : 10,
-      height : 8,
-      dieStatus : 1
-  });
-  
-  var enemy2ImageMap = new ImageMap({
-      image : app.getImageManager().get("enemy2"), 
-      width : 13,
-      height : 8,
-      dieStatus : 1
-  });
-  
-  var enemy1ImageMap = new ImageMap({
-      image : app.getImageManager().get("enemy1"), 
-      width : 14,
-      height : 8,
-      dieStatus : 1
-  });
+    
+
        
        
  
-       
+  /*     
   // creo las filas de enemigos
   for(var i=0; i<11; i++) {
       var enemy3Animation = new Animate(enemy3ImageMap, {
@@ -181,6 +164,8 @@ function init_game() {
           EnemyShot(this.getX() + 3, this.getY() + 5); 
       }
       
+
+
       // enterFrame. ----------------------------------------------------------------------------
       enemy3.on("enterFrame", function(eventData, s) { 
           s.incX(global.enemyDx);
@@ -316,7 +301,9 @@ function init_game() {
 var only_10 = 50;
   
   
-  app.preUpdateCallback(function() {
+  app.preUpdateCallback(() => {
+    update()
+  })
       // si algun enemy me dijo que cambie de direccion
       if(global.changeDir) { 
           global.enemyDx = -global.enemyDx;

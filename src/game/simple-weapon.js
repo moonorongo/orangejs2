@@ -12,10 +12,8 @@ class SimpleWeapon {
         width : 1,
         height : 4
     });    
-
-
-
   }
+
 
 
 
@@ -26,7 +24,7 @@ class SimpleWeapon {
     
     let mainLayer = this.orangeRoot.getLayers()[0];
     mainLayer.addSprite(spr);
-    spr.setX(x).setY(y);
+    spr.setX(x).setY(y-8);
     
     spr.on("enterFrame", function(eventData, s) { 
         if (s.getY() > 110) {
@@ -35,6 +33,27 @@ class SimpleWeapon {
             s.destroy();
         }
     });       
+
+
+    spr.on("collision", function(eventName, ourWeapon, aCollision) {
+      
+      if(aCollision.length > 0) {
+        console.log("context", ourWeapon);
+        console.log("aCollision", aCollision);
+        console.log("------------------------------------------------------")
+        
+        
+        if(aCollision[0].getClass() == Sprite.Classes.ENEMY) {
+          ourWeapon.setX(ourWeapon.getX())
+          ourWeapon.destroy();
+            // obtengo fila y columna del id "hardcodeado"
+            // var fila = parseInt(aCollision[0].id.split("_")[0]);
+            // var columna = parseInt(aCollision[0].id.split("_")[1]);
+        }
+      }
+    });
+    
+
   }
 }
 

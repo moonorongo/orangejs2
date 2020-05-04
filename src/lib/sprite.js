@@ -91,7 +91,7 @@ class Sprite {
     this._ignoreBound = customSettings.ignoreBound || false
             
     /** @property {private int} _muriendo Numero que tiene la cantidad de frames que dura la animacion que se ejecuta cuando destruyo al Sprite. */
-    this._muriendo = (this._src.getType() == "Animation")?  this._src._fnGetStatusDieCantFrames() : 1
+    this._muriendo = (this._src.getType() == "Animation")?  this._src._fnGetStatusDieCantFrames() : 0
         
     this.orangeRoot = null;         
         
@@ -404,6 +404,9 @@ class Sprite {
     let imgData; 
 
     if(this._prepareToDestroy) { // recibio la orden de reventarlo
+console.log('destroing') 
+
+
       this._src.setStatusDie(); 
       imgData = this._src.getFrame(0);
 

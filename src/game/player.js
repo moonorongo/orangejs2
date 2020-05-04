@@ -66,6 +66,10 @@ class Nave extends Sprite {
 
             case 32 : this.fire()
                       break;
+
+            case 17 : this.fire()
+                      break;
+
             default :   console.log(eventData.e.keyCode);
         }
     });
