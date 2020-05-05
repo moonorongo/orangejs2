@@ -22,7 +22,7 @@ class ImageMap {
     this._spriteHeight = imgData.height;
 
     this._tMap = imgData.transitableMap || null;
-    this._dieStatus = imgData.dieStatus || 0;
+    this._dieStatus = imgData.dieStatus || null;
     this._status = 0;
 
     let _cantidadFrames = Math.ceil(this._imagenWidth / this._spriteWidth),
@@ -127,7 +127,11 @@ class ImageMap {
 
 
   _fnGetStatusDieCantFrames() {
-     return this._nFrames[this._dieStatus];
+    if(_.isNull(this._dieStatus)) {
+      return 0;
+    } else {
+      return this._nFrames[this._dieStatus];
+    }
   }
   
 }

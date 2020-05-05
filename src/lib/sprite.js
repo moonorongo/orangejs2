@@ -404,11 +404,15 @@ class Sprite {
     let imgData; 
 
     if(this._prepareToDestroy) { // recibio la orden de reventarlo
-console.log('destroing') 
-
+      if(this._muriendo > 0) { 
+        this._muriendo--;
+      } else { // ya murio, lo reviento del todo.
+        this.orangeRoot.removeFromEventStack(this);
+        if(this._removeFromLayer) this._layer.removeSprite(this);
+      }                
 
       this._src.setStatusDie(); 
-      imgData = this._src.getFrame(0);
+      imgData = this._src.getFrame(0);  // si _src es Animation, no se toma en cuenta el parametro.
 
       this._layer._fnGetCanvas()
         .drawImage(
@@ -421,14 +425,6 @@ console.log('destroing')
           this._y, 
           this._w * this._expandX, 
           this._h * this._expandY);
-        
-        // todo esto esta como medio choto... revisar a futuro...
-        if(this._muriendo > 0) { 
-          this._muriendo--;
-        } else { // ya murio, lo reviento del todo.
-          this.orangeRoot.removeFromEventStack(this);
-          if(this._removeFromLayer) this._layer.removeSprite(this);
-        }                
         
     } else { // dibuja normalmente
 

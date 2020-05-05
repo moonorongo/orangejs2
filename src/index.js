@@ -76,9 +76,6 @@ function init_game() {
 
 // implementar colisiones
 
-// ver _dieStatus, muriendo, etc,
-// si no esta definido, que devuelva 0 frames, de alguna forma,
-// ahora devuelve la cantidad de frames del 1er status... y puede que no quiera eso.
 // y, cuando esta muriendo... poder setear si sigue siendo destructivo.
 
 

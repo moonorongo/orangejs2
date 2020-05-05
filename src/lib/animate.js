@@ -110,11 +110,15 @@ class Animate {
 
 
   /**
-   * @function {public void} setStatusDie Asigna el status al dieStatus asignado en la instanciacion del ImageMap, el default es 0.
+   * @function {public void} setStatusDie Asigna el status al dieStatus asignado en la instanciacion del ImageMap, 
+   * si no tiene seteado en imageMap no lo setea, deja el que estaba
    */    
   setStatusDie() {
-    // aca hay que ver que pasa, que reproduce la animacion varias veces... mhmm ver
-     this._status = this._imageMap._fnGetDieStatus();
+    if(_.isNull(this._imageMap._fnGetDieStatus())) {
+      return;
+    }
+
+    this._status = this._imageMap._fnGetDieStatus();
   }  
 
 
@@ -123,9 +127,13 @@ class Animate {
    */    
   _fnGetStatusDieCantFrames() {
     let i = this._imageMap._fnGetDieStatus();
-    let speed = (_.isUndefined(this._config.statusConfig[i].speed))? this._speed : this._config.statusConfig[i].speed;
 
-    return this._imageMap._fnGetStatusDieCantFrames() * (speed - 1);
+    if(_.isNull(i)) {
+      return 0;
+    } else {
+      let speed = (_.isUndefined(this._config.statusConfig[i].speed))? this._speed : this._config.statusConfig[i].speed;
+      return this._imageMap._fnGetStatusDieCantFrames() * (speed - 1);
+    }
   }
 
 
