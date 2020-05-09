@@ -409,6 +409,7 @@ class Sprite {
       } else { // ya murio, lo reviento del todo.
         this.orangeRoot.removeFromEventStack(this);
         if(this._removeFromLayer) this._layer.removeSprite(this);
+        return;
       }                
 
       this._src.setStatusDie(); 

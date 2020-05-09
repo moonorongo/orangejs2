@@ -118,7 +118,11 @@ class Animate {
       return;
     }
 
-    this._status = this._imageMap._fnGetDieStatus();
+    if(this._status != this._imageMap._fnGetDieStatus()) {
+      this._frame = 0;
+      this._status = this._imageMap._fnGetDieStatus();
+    }
+
   }  
 
 

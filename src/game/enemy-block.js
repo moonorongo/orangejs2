@@ -8,7 +8,7 @@ class EnemyBlock {
     this.orangeRoot = appContext;
     this.changeDir = false;
     // this.enemyDx = .5;
-    this.enemyDx = 0;
+    this.enemyDx = 0; // esto los deja fijos en pantalla, 0.5 comienzan a moverse
     this.downCounter = 0;
 
     this.setImages();
@@ -60,7 +60,7 @@ class EnemyBlock {
           enemyAnimation = new Animate(this.enemy1ImageMap, {
               statusConfig : [ 
                   { loopMode : "L"},
-                  { loopMode : "L", speed : 8}
+                  { loopMode : "L", speed : 4}
               ],
               speed : 8
           });
@@ -69,7 +69,7 @@ class EnemyBlock {
           enemyAnimation = new Animate(this.enemy2ImageMap, {
               statusConfig : [ 
                   { loopMode : "L"},
-                  { loopMode : "L", speed : 8}
+                  { loopMode : "L", speed : 4}
               ],
               speed : 8
           });
@@ -78,7 +78,7 @@ class EnemyBlock {
           enemyAnimation = new Animate(this.enemy3ImageMap, {
             statusConfig : [ 
                 { loopMode : "L"},
-                { loopMode : "L", speed : 8}
+                { loopMode : "L", speed : 4}
             ],
             speed : 8
           });

@@ -35,7 +35,7 @@ class Nave extends Sprite {
     this.simpleWeapon = new SimpleWeapon(appContext);
     this.complexWeapon = new ComplexWeapon(appContext);
     
-    this.weapon = this.simpleWeapon;
+    this.weapon = this.complexWeapon;
 
     // asigno el context de la app, como todavia no lo agregamos a un layer no lo tiene asignado
     // y rompe bindActions()
@@ -75,12 +75,12 @@ class Nave extends Sprite {
     });
     
     this.on("mousemove", (eventData) => {
-        this.setX((eventData.relativeX / 2.5) - 8);
+        this.setX((eventData.relativeX / 2) - 8);
     });
     
     this.on("mouseup", (eventData) => {
         this.fire();
-        this.setX((eventData.relativeX / 2.5) - 8);
+        this.setX((eventData.relativeX / 2) - 8);
     });
     
     this.on("keyup", (eventData) => {

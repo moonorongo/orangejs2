@@ -35,7 +35,7 @@ var dx,
     
 var app = new Orange()      
 
-app.init(document.getElementById("main"), {scaleWidth : 2.5, scaleHeight : 2});
+app.init(document.getElementById("main"), {scaleWidth : 2, scaleHeight : 2});
 
 // agrego las imagenes que quiero utilizar.
 app.getImageManager().addImage(["assets/space_invaders/bala_enemy.png", 
@@ -45,7 +45,7 @@ app.getImageManager().addImage(["assets/space_invaders/bala_enemy.png",
 "assets/space_invaders/ufo.png", 
 "assets/space_invaders/nave.png", 
 "assets/space_invaders/bala_nave.png", 
-"assets/space_invaders/screenShotSI.png"
+"assets/space_invaders/space_bg.png"
 ]);
 
 
@@ -56,7 +56,7 @@ function init_game() {
   // Layers
   var l = new Layer();
   app.addLayer(l);
-  l.setBackground(app.getImageManager().get("screenShotSI"))
+  l.setBackground(app.getImageManager().get("space_bg"))
     
 
   // Nave Sprite
@@ -72,6 +72,14 @@ function init_game() {
 
   app.preUpdateCallback(() => {
     bloqueEnemigos.updateFrame()
+
+    // scroll fondo simple
+    if(l.getX() > -512) {
+      l.setX(l.getX() - 1);
+    } else {
+      l.setX(0)
+    }
+
   })
 
 // implementar colisiones

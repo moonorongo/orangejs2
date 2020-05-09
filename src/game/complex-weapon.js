@@ -46,16 +46,11 @@ class ComplexWeapon {
     spr.on("collision", function(eventName, ourWeapon, aCollision) {
       
       if(aCollision.length > 0) {
-        console.log("context", ourWeapon);
-        console.log("aCollision", aCollision);
-        console.log("------------------------------------------------------")
+        let enemy = aCollision[0];
         
-        
-        if(aCollision[0].getClass() == Sprite.Classes.ENEMY) {
+        if(enemy.getClass() == Sprite.Classes.ENEMY) {
           ourWeapon.destroy();
-            // obtengo fila y columna del id "hardcodeado"
-            // var fila = parseInt(aCollision[0].id.split("_")[0]);
-            // var columna = parseInt(aCollision[0].id.split("_")[1]);
+          enemy.destroy();
         }
       }
     });    

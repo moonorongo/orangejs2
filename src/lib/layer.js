@@ -97,6 +97,37 @@ class Layer {
   }  
 
 
+  /**
+   * Setea posicion x de fondo
+   * @param {integer} x posicion x de background
+   */
+  setX(x) {
+    this._bgX = x;
+  }
+
+  /**
+   * Setea posicion y de fondo
+   * @param {integer} y posicion y de background
+   */
+  setY(y) {
+    this._bgY = y;
+  }
+
+  /**
+   * obtiene posicion x de fondo
+   */
+  getX() {
+    return this._bgX
+  }
+
+  /**
+   * obtiene posicion y de fondo
+   */
+  getY() {
+    return this._bgY
+  }
+
+
   _setBackground(img, x, y) {
     this._bgX = x || 0;
     this._bgY = y || 0;
