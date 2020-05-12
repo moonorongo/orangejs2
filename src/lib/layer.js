@@ -86,14 +86,20 @@ class Layer {
       this._layer.restore();
     }
 
-    // pinta cada sprite.
-    _.each(this._sprites, (sprite) => {
-      if(sprite) {
-        sprite._fnUpdate();
-      } else {
-        console.info('Layer: undefined sprite to update (_fnUpdate)  '); 
+    // limpia de _sprites todos los marcados con _prepareToDestroy 
+    this._sprites = this._sprites.filter((spriteARemover) => {
+      // quita del eventStack
+      if(spriteARemover._prepareToDestroy) {
+        this.orangeRoot.removeFromEventStack(spriteARemover);
       }
-    });
+
+      return !spriteARemover._prepareToDestroy;
+    })
+
+    // pinta cada sprite.
+    for(let sprite of this._sprites) {
+      sprite._fnUpdate();
+    }
   }  
 
 
@@ -220,7 +226,8 @@ class Layer {
 
 
   /**
-   * @function {public boolean} removeSprite Quita la referencia del sprite del array interno de Sprites. Retorna true si la operacion se concreta exitosamente.
+   * @function {public boolean} removeSprite Quita la referencia del sprite del array interno de Sprites. 
+   * Retorna true si la operacion se concreta exitosamente.
    * @param {Sprite} sprite El Sprite que quiero quitar.
    */    
   removeSprite(sprite) {

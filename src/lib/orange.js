@@ -13,7 +13,7 @@
  * @constructor Orange
  */
 class Orange {
-  constructor() {
+  constructor(options = {}) {
     /** @property {private canvasContext} _context El contexto 2D creado al inicializar la libreria, y donde se dibuja todo. */
     this._context = null; 
 
@@ -32,8 +32,10 @@ class Orange {
     /** @property {private int} _counter Contador interno de 1 a 256, que por ahora no sirve para nada, pero seguramente servira para algo. */
     this._counter = 1;
 
-    /** @property {private int} _speed el intervalo de ms entre llamadas al loop, 20ms son 60 fps. */
-    this._speed = 20; // ms;
+    /** @property {private int} _fps frames por segundo, default 60 */
+    this._fps = options.fps || 60;
+
+    this._speed = Math.round(1000 / this._fps);
 
     /** @property {private object} _eventStack Aqui se guardan las instancias de los sprites a los que se asignaron eventos. */
     this._eventStack = { 
@@ -109,9 +111,9 @@ class Orange {
       e.preventDefault();
     }
     
-    _.each(this._eventStack[key], (sprite) => {
+    for(let sprite of this._eventStack[key]) {
       sprite._fnNotify(key, e);
-    }); 
+    }
   };
 
 
@@ -121,13 +123,14 @@ class Orange {
    * 
    */    
   _bindEvents() {
-    _.each(this._eventStack, (event, key) => {
+    for(const key in this._eventStack) {
+      let event = this._eventStack[key];
       if( (key != "collision") && (key != "enterFrame") ) {
         let regExKey =  /key/g;
         let _element = (regExKey.test(key))? window : this.canvasElement;
         _element.addEventListener(key, evt => this._listener(evt));  
       } 
-    });        
+    }
   }
 
 
@@ -136,9 +139,9 @@ class Orange {
    * Es llamada en cada actualizacion del frame, desde el _loop, recorre todos los Layers en _layer, y les ejecuta Layer.update()
    */
   _update() {
-    _.each(this._layers, (layer) => {
+    for(let layer of this._layers) {
       layer.update();
-    });
+    }
   }
 
 
@@ -167,12 +170,12 @@ class Orange {
 
     // evento collision: se ejecuta para cada sprite registrado.
     if(this._eventStack) {
-      this._eventStack.collision && _.each(this._eventStack.collision, function(sprite) {
-        sprite._fnNotify("collision");
-      });                      
-
       this._eventStack.enterFrame && _.each(this._eventStack.enterFrame, function(sprite) {
           sprite._fnNotify("enterFrame");
+      });                      
+
+      this._eventStack.collision && _.each(this._eventStack.collision, function(sprite) {
+        sprite._fnNotify("collision");
       });                      
     }
     
@@ -306,10 +309,10 @@ class Orange {
     _.each(this._eventStack, (e, key) => {
       let i = e.indexOf(sprite);
       if(i != -1) {
-          e.splice(i,1);
-          return true;
+        e.splice(i,1);
+        return true;
       } else {
-          return false;
+        return false;
       }
     });
   }

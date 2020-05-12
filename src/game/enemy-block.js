@@ -1,5 +1,4 @@
 import ImageMap from '../lib/image_map'
-import Animate from '../lib/animate'
 import Sprite from '../lib/sprite'
 
 
@@ -7,9 +6,10 @@ class EnemyBlock {
   constructor(appContext) {
     this.orangeRoot = appContext;
     this.changeDir = false;
-    // this.enemyDx = .5;
-    this.enemyDx = 0; // esto los deja fijos en pantalla, 0.5 comienzan a moverse
+    this.enemyDx = 0.2; // esto los deja fijos en pantalla, 0.5 comienzan a moverse
     this.downCounter = 0;
+    this.cantRows = 5; // cantidad de filas de enemigos
+    this.cantColumns = 11;
 
     this.setImages();
   }
@@ -20,26 +20,20 @@ class EnemyBlock {
     this.enemy3ImageMap = new ImageMap({
       image : this.orangeRoot.getImageManager().get("enemy3"), 
       width : 10,
-      height : 8,
-      dieStatus : 1
+      height : 8
     });
 
     this.enemy2ImageMap = new ImageMap({
       image : this.orangeRoot.getImageManager().get("enemy2"), 
       width : 13,
-      height : 8,
-      dieStatus : 1
+      height : 8
     });
 
     this.enemy1ImageMap = new ImageMap({
       image : this.orangeRoot.getImageManager().get("enemy1"), 
       width : 14,
-      height : 8,
-      dieStatus : 1
+      height : 8
     });    
-
-
-    // animations
   }
 
 
@@ -50,42 +44,22 @@ class EnemyBlock {
     let mainLayer = this.orangeRoot.getLayers()[0]
     this.enemies = [];
 
-    for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < this.cantRows; j++) {
       let enemiesRow = [];
 
-      for (let i = 0; i < 11; i++) {
-        let enemyAnimation;
+      for (let i = 0; i < this.cantColumns; i++) {
+        let selectedEnemyMap;
 
         if(j >= 3) { // cuarta y quinta fila de enemigos
-          enemyAnimation = new Animate(this.enemy1ImageMap, {
-              statusConfig : [ 
-                  { loopMode : "L"},
-                  { loopMode : "L", speed : 4}
-              ],
-              speed : 8
-          });
-
+          selectedEnemyMap = this.enemy1ImageMap;
         } else if(j >= 1) {  // segunda y tercera fila de enemigos
-          enemyAnimation = new Animate(this.enemy2ImageMap, {
-              statusConfig : [ 
-                  { loopMode : "L"},
-                  { loopMode : "L", speed : 4}
-              ],
-              speed : 8
-          });
-
+          selectedEnemyMap = this.enemy2ImageMap;
         } else { // primera fila de enemigos
-          enemyAnimation = new Animate(this.enemy3ImageMap, {
-            statusConfig : [ 
-                { loopMode : "L"},
-                { loopMode : "L", speed : 4}
-            ],
-            speed : 8
-          });
+          selectedEnemyMap = this.enemy3ImageMap;
         } // end ifs 
 
         let enemy = new Sprite({
-          src : enemyAnimation,
+          src : selectedEnemyMap,
           class : Sprite.Classes.ENEMY
         });          
 
@@ -119,7 +93,7 @@ class EnemyBlock {
     // si algun enemy me dijo que cambie de direccion
     if(this.changeDir) { 
       this.enemyDx = -this.enemyDx;
-      this.downCounter = 5;
+      this.downCounter = 0; // prevents que baje
       this.changeDir = false;
     }    
 
@@ -130,8 +104,8 @@ class EnemyBlock {
 
     this.originX += this.enemyDx;
 
-    for (let j = 0; j < 5; j++) {
-      for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < this.cantRows; j++) {
+      for (let i = 0; i < this.cantColumns; i++) {
         let enemy = this.enemies[j][i];
         enemy && enemy.setX(this.originX + (i*16) ).setY(this.originY + (j*16) );
       }

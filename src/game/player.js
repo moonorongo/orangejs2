@@ -1,31 +1,20 @@
 import Sprite from '../lib/sprite'
-import Animate from '../lib/animate'
 import ImageMap from '../lib/image_map'
 import SimpleWeapon from './simple-weapon';
 import ComplexWeapon from './complex-weapon';
 
 class Nave extends Sprite {
   
-  constructor(appContext) {
+  constructor(appContext, dontBind = false) {
     // ImageMaps
     let naveImageMap = new ImageMap({
       image : appContext.getImageManager().get("nave"),
       width : 16,
-      height : 8,
-      dieStatus : 1 // el status que seleccionara al momento de hacer destroy en el sprite
-    });
-
-    // Animations
-    let naveAnimation = new Animate(naveImageMap, {
-        statusConfig : [ 
-            { loopMode : "L"},
-            { loopMode : "L"}
-        ],
-        speed : 1
+      height : 8
     });
 
     super({
-           src : naveAnimation,
+           src : naveImageMap,
            class : Sprite.Classes.FRIEND,
            id : "nave1"
        });
@@ -41,7 +30,7 @@ class Nave extends Sprite {
     // y rompe bindActions()
     this.orangeRoot = appContext; 
 
-    this.bindActions();
+    !dontBind && this.bindActions(); // dont Bind: solo para testings
   }
 
 

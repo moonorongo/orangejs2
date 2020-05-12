@@ -76,11 +76,6 @@ class Sprite {
     /** @property {private boolean} _prepareToDestroy Flag, se pone en true cuando llamo a Sprite.destroy(). */
     this._prepareToDestroy = false
             
-    /** @property {private boolean} _removeFromLayer Flag, cuando llamo a Sprite.destroy() indica si debo, ademas, quitar del Layer el sprite. 
-     * Esto es util para cuando quiero destruir un Sprite, pero quiero dejar el "cadaver" como imagen. 
-     */
-    this._removeFromLayer = false
-
     /**
      * @property {private int} _expand Aca tengo el factor de expansion del Sprite: 0 > _expand < 1: encoge; _expand = 1: tamaño real; _expand > 1: agranda.
      */
@@ -89,10 +84,7 @@ class Sprite {
             
 
     this._ignoreBound = customSettings.ignoreBound || false
-            
-    /** @property {private int} _muriendo Numero que tiene la cantidad de frames que dura la animacion que se ejecuta cuando destruyo al Sprite. */
-    this._muriendo = (this._src.getType() == "Animation")?  this._src._fnGetStatusDieCantFrames() : 0
-        
+       
     this.orangeRoot = null;         
         
     this._showPivotPoint = false;
@@ -354,9 +346,8 @@ class Sprite {
    * Si le paso como parametro 'false', no lo removera del Layer (util para, por ejemplo, dejar el cadaver del enemigo)
    * @param {boolean} removeFromLayer Si seteo false se conservará la instancia en el Layer.
    */    
-  destroy(removeFromLayer) {
+  destroy() {
     this._prepareToDestroy = true;
-    this._removeFromLayer = (_.isUndefined(removeFromLayer))? true : removeFromLayer;
   }
 
 
@@ -395,40 +386,7 @@ class Sprite {
    * @function {public void} _fnUpdate Actualiza el Sprite. Si lo destruimos maneja las fases de la destruccion. 
    */    
   _fnUpdate() {
-    // esto funciona asi: _src puede ser una Animation o ImageMap... le paso (0) por si es un ImageMap, 
-    // ImageMap.getFrame puede tomar (frame) o (frame, status): si no especifico status, toma el status interno (esto es para compatibilidad con Animation)
-    // y si es una Animation, no es tenido en cuenta.
-    // getFrame(), en Animation o ImageMap devuelven imgData.
-    // seis años despues.. esta clarisimo
-    
-    let imgData; 
-
-    if(this._prepareToDestroy) { // recibio la orden de reventarlo
-      if(this._muriendo > 0) { 
-        this._muriendo--;
-      } else { // ya murio, lo reviento del todo.
-        this.orangeRoot.removeFromEventStack(this);
-        if(this._removeFromLayer) this._layer.removeSprite(this);
-        return;
-      }                
-
-      this._src.setStatusDie(); 
-      imgData = this._src.getFrame(0);  // si _src es Animation, no se toma en cuenta el parametro.
-
-      this._layer._fnGetCanvas()
-        .drawImage(
-          imgData.image, 
-          imgData.px, 
-          imgData.py, 
-          this._w, 
-          this._h, 
-          this._x, 
-          this._y, 
-          this._w * this._expandX, 
-          this._h * this._expandY);
-        
-    } else { // dibuja normalmente
-
+    let imgData;
       imgData = this._src.getFrame(0); // si _src es Animation, no se toma en cuenta el parametro.
       this._layer._fnGetCanvas()
        .drawImage(
@@ -441,15 +399,13 @@ class Sprite {
           this._y,
           this._w * this._expandX, 
           this._h * this._expandY);
-    }
     
-    if(this._showPivotPoint) {
+    if(this._showPivotPoint || this._prepareToDestroy) {
       this._layer._fnGetCanvas().save();
-      this._layer._fnGetCanvas().fillStyle = "rgba(0,255,255,1)";
-      this._layer._fnGetCanvas().fillRect(this._x + this._pivotX, this._y + this._pivotY, 1, 1);                     
+      this._layer._fnGetCanvas().fillStyle = "rgba(255,0,255,1)";
+      this._layer._fnGetCanvas().fillRect(this._x + this._pivotX, this._y + this._pivotY, 3, 3);                     
       this._layer._fnGetCanvas().restore();
     }
-
   } // end _fnUpdate
 
 
@@ -478,30 +434,25 @@ class Sprite {
     // para cualquier evento que no sea collision voy a tomar algunos valores para enviar al objeto q le mando al callback
     if (eventName=="collision") { 
       // ver si solo hay un sprite... ;P
-      _.each(this._layer._fnGetSprites(), (sprite) => {
-          if(sprite !== this) {
-            let p1x = this._x,
-                p1y = this._y,
-                o2x = sprite.getX() + sprite.getWidth(),
-                o2y = sprite.getY() + sprite.getHeight(),
-                totalWidth = (this._w * this._expandX) + sprite.getWidth(),
-                totalHeight = (this._h * this._expandY) + sprite.getHeight(),
-                restaX = o2x - p1x,
-                restaY = o2y - p1y;
-
-            // var p2x = this._x + (this._w * this._expandX);
-            // var p2y = this._y + (this._h * this._expandY);
-            
-            // var o1x = sprite.getX();
-            // var o1y = sprite.getY();
+      
+      for(let sprite of this._layer._fnGetSprites()) {
+        if(sprite !== this) {
+          let p1x = this._x,
+              p1y = this._y,
+              o2x = sprite.getX() + sprite.getWidth(),
+              o2y = sprite.getY() + sprite.getHeight(),
+              totalWidth = (this._w * this._expandX) + sprite.getWidth(),
+              totalHeight = (this._h * this._expandY) + sprite.getHeight(),
+              restaX = o2x - p1x,
+              restaY = o2y - p1y;
               
-            if( (restaX > 0) && (restaX < totalWidth) &&
-                (restaY > 0) && (restaY < totalHeight) ) {
-             aCollision.push(sprite);
-            }
-          } // if
-      });
-
+          if( (restaX > 0) && (restaX < totalWidth) &&
+              (restaY > 0) && (restaY < totalHeight) ) {
+           aCollision.push(sprite);
+          }
+        } // if
+      }
+  
     } else if(eventName=="enterFrame") { 
 
       eventData = {
