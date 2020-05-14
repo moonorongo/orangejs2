@@ -8,8 +8,8 @@ class EnemyBlock {
     this.changeDir = false;
     this.enemyDx = 0.2; // esto los deja fijos en pantalla, 0.5 comienzan a moverse
     this.downCounter = 0;
-    this.cantRows = 5; // cantidad de filas de enemigos
-    this.cantColumns = 11;
+    this.cantRows = 7; // cantidad de filas de enemigos
+    this.cantColumns = 15;
 
     this.setImages();
   }
