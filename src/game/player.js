@@ -20,6 +20,8 @@ class Nave extends Sprite {
        });
 
     this.dx = 0;
+
+    this.currentAngle = 0;
     
     this.simpleWeapon = new SimpleWeapon(appContext);
     this.complexWeapon = new ComplexWeapon(appContext);
@@ -83,13 +85,19 @@ class Nave extends Sprite {
     
     this.on("enterFrame", () => {
         this.incX(this.dx);
+
+        this.setAngle(this.currentAngle);
+        this.currentAngle += 2;
+        if(this.currentAngle > 360) {
+          this.currentAngle = 0
+        }
     });    
   }
 
 
   fire() {
     if(this.weapon) {
-      this.weapon.fire(this.getX() + 8, this.getY());
+      this.weapon.fire(this.getX(), this.getY());
     } else {
       console.error('no weapon');
     }

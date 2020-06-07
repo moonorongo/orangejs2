@@ -1,0 +1,74 @@
+// Importamos las classes necesarias 
+
+import Orange from './lib/orange';
+import Layer from './lib/layer';
+import ImageMap from './lib/image_map'
+import Sprite from './lib/sprite'
+
+// variables con las velocidades de la bola
+var dx = 3, 
+    dy = 2;
+
+// Aqui hacemos una instancia de Orange, la cual nos crea una app, que es la que contendra nuestro juego
+// y le pasamos un parametro, que son los frames por segundo a los que correra
+// mas fps, mas fluidez, menos fps, mas a los saltos
+// realmente, este paso y el siguiente deberia ser uno solo...
+// seguramente lo corrija mas adelante
+var app = new Orange({
+  fps : 60
+})      
+
+// inicializo la app, y le especifico el <canvas> sobre el que renderizara
+app.init(document.getElementById("main_hello"));
+
+
+// agrego las imagenes que quiero utilizar.
+app.getImageManager().addImage(["assets/hello/ball.png"]);
+
+// Inicio la precarga, cuando finalize arranca el juego
+app.getImageManager().preload(function() {
+  // Layers
+  var layer = new Layer();
+  app.addLayer(layer);
+
+  // ImageMaps
+  let ballImageMap = new ImageMap({
+    image : app.getImageManager().get("ball"),
+    width : 32,
+    height : 31
+  });
+
+  // bola
+  var ball = new Sprite({
+           src : ballImageMap,
+           class : Sprite.Classes.FRIEND,
+           id : "nave1"
+       });
+
+  layer.addSprite(ball); 
+  ball.setX(110).setY(192);
+
+
+
+  app.preUpdateCallback(() => {
+    let x = ball.getX(),
+        y = ball.getY();
+
+    if ((x > 480) || (x < 0)) {
+      dx = -dx;
+    }
+
+    if ((y > 417) || (y < 0)) {
+      dy = -dy;
+    }
+    
+    x += dx;
+    y += dy; 
+
+    ball.setX(x).setY(y);
+  })
+
+  // y finalmente, pulso play.
+  app.start();
+}); // FIN PRELOAD
+

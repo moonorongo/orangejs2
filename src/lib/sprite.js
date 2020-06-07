@@ -72,7 +72,10 @@ class Sprite {
     /** @property {private int} _dirY Direccion vertical hacia donde esta yendo el Sprite. */
     this._dirY = 0
 
-            
+    /** @property {private int} _angle Angulo de rotacion del sprite. */
+    this._angle = 0
+
+    
     /** @property {private boolean} _prepareToDestroy Flag, se pone en true cuando llamo a Sprite.destroy(). */
     this._prepareToDestroy = false
             
@@ -382,28 +385,61 @@ class Sprite {
     this._id = id;
   }
 
+  setAngle(angle) {
+    this._angle = angle
+  }
+
   /**
    * @function {public void} _fnUpdate Actualiza el Sprite. Si lo destruimos maneja las fases de la destruccion. 
    */    
   _fnUpdate() {
     let imgData;
       imgData = this._src.getFrame(0); // si _src es Animation, no se toma en cuenta el parametro.
+
+    // setea el angulo de transformacion
+    if(this._angle != 0) {
+
+      this._layer._fnGetCanvas().translate(this._x, this._y);
+      this._layer._fnGetCanvas().rotate(this._angle * Math.PI / 180);
+
       this._layer._fnGetCanvas()
-       .drawImage(
-          imgData.image, 
-          imgData.px, 
-          imgData.py, 
-          this._w, 
-          this._h, 
-          this._x,
-          this._y,
-          this._w * this._expandX, 
-          this._h * this._expandY);
-    
-    if(this._showPivotPoint || this._prepareToDestroy) {
+      .drawImage(
+        imgData.image, 
+        imgData.px, 
+        imgData.py, 
+        this._w, 
+        this._h, 
+        -this._pivotX, 
+        -this._pivotY,
+        this._w * this._expandX, 
+        this._h * this._expandY);
+
+      this._layer._fnGetCanvas().rotate(- this._angle * Math.PI / 180);
+      this._layer._fnGetCanvas().translate(-this._x, -this._y);
+
+      this._layer._fnGetCanvas().setTransform(1, 0, 0, 1, 0, 0);
+  
+    } else {
+
+      this._layer._fnGetCanvas()
+      .drawImage(
+        imgData.image, 
+        imgData.px, 
+        imgData.py, 
+        this._w, 
+        this._h, 
+        this._x-this._pivotX,
+        this._y-this._pivotY,
+        this._w * this._expandX, 
+        this._h * this._expandY);
+    }
+
+   
+
+    if(this._showPivotPoint) {
       this._layer._fnGetCanvas().save();
       this._layer._fnGetCanvas().fillStyle = "rgba(255,0,255,1)";
-      this._layer._fnGetCanvas().fillRect(this._x + this._pivotX, this._y + this._pivotY, 3, 3);                     
+      this._layer._fnGetCanvas().fillRect(this._x, this._y, 2, 2);                     
       this._layer._fnGetCanvas().restore();
     }
   } // end _fnUpdate

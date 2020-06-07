@@ -46,6 +46,8 @@ function init_game() {
 
   // Nave Sprite
   var nave = new Player(app);
+  nave.showPivotPoint(true);
+
   l.addSprite(nave); 
   nave.setX(110).setY(192);
 
